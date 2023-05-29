@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 
-const AddMovies = () => {
+const AddMovies = (props) => {
   const [title, setTitle] = useState("");
   const [openingText, setOpeningText] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
@@ -21,7 +21,7 @@ const AddMovies = () => {
         openingText:openingText,
         releaseDate:releaseDate
     }
-    console.log(NewMovieobj);
+    props.sendMovieData(NewMovieobj);
   };
   return (
     <Fragment>

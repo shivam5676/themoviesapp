@@ -33,32 +33,47 @@ function App() {
       setisLoading(true);
       setError(null);
       try {
-        const response = await fetch("https://swapi.dev/api/films/");
+        const response = await fetch(
+          "https://reactproject-15b3e-default-rtdb.firebaseio.com/movies.json"
+        );
         if (!response.ok) {
           throw new Error("something went wrong");
         }
         const data = await response.json();
+        const loadedmovies = [];
+        for (const key in data) {
+          loadedmovies.push({
+            id: key,
+            title: data[key].title,
+            openingText: data[key].openingText,
+            releaseDate: data[key].releaseDate,
+          });
+        }
 
-        const transformeddata = data.results.map((movieData) => {
-          return {
-            id: movieData.episode_id,
-            title: movieData.title,
-            openingText: movieData.opening_crawl,
-            releaseDate: movieData.release_date,
-          };
-        },[]);
-        setMovies(transformeddata);
+        setMovies(loadedmovies);
       } catch (error) {
         setError(error.message);
       }
       setisLoading(false);
     }
   });
+  async function movieDataHandler(moviedata) {
+    const response = await fetch(
+      "https://reactproject-15b3e-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(moviedata),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
 
   return (
     <React.Fragment>
       <section>
-        <AddMovies></AddMovies>
+        <AddMovies sendMovieData={movieDataHandler}></AddMovies>
       </section>
       <section>
         <button onClick={moviedetailsfetcher}>Fetch Movies</button>
